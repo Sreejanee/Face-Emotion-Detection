@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MoodScan</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poetsen+One&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&family=Roboto+Slab:wght@100..900&display=swap" rel="stylesheet">
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .prediction {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .main {
+            min-height: 100vh; /* Set min-height to ensure it takes full height if content is less */
+            width: 100vw;
+            padding-top: 80px; /* Adjusted for navbar space */
+        }
+        h1 {
+            font-family: "Poetsen One", sans-serif;
+            font-weight: 400;
+            font-style: normal;
+        }
+        h4 {
+            font-family: "Pacifico", cursive;
+            font-weight: 400;
+            font-style: normal;
+        }
+        .section {
+            padding: 60px 0;
+        }
+        .parastyle {
+            font-family: "EB Garamond", serif;
+            font-optical-sizing: auto;
+            font-weight: 800;
+            font-size: 25px;
+            font-style: normal;
+        }
+        #aboutfont {
+            font-family: "Roboto Slab", serif;
+            font-optical-sizing: auto;
+            font-weight: 800;
+            font-size: 40px;
+            font-style: normal;
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand px-2 py-3" href="#">MoodScan</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#about">About</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container mt-5 main">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <h1 class="text-center h-15 my-2">Emotion Recognition</h1>
+                <h4 class="text-center">Upload a grayscale image and I will predict the emotion !!</h4>
+                <br>
+                <form method="POST" enctype="multipart/form-data" class="text-center">
+                    <div class="form-group">
+                        <input type="file" name="file" class="form-control-file">
+                    </div>
+                    <button type="submit" class="btn btn-primary my-3">Upload</button>
+                </form>
+                {% if message %}
+                    <div class="alert alert-info text-center mt-3 prediction" style="color: {{ color }};">
+                        {{ message }}
+                    </div>
+                {% endif %}
+                {% if filename %}
+                    <div class="text-center mt-3">
+                        <img src="{{ filename }}" class="img-fluid" width="200">
+                    </div>
+                {% endif %}
+                <hr>
+                <h1 class="text-center mt-5">Real-Time Detection</h1>
+                <h4 class="text-center mt-3">Turn on your webcam and click the button below.<br> Hold your breath for a few seconds and your emotions won't be hidden from us!!</h4>
+                <form method="POST" action="{{ url_for('start_realtime_detection') }}" class="text-center">
+                    <br>
+                    <div class="d-flex justify-content-center align-items-center">
+                        <button type="submit" class="btn btn-primary">Start Real-Time Detection</button>
+                    </div>
+                </form>
+                {% with messages = get_flashed_messages() %}
+                    {% if messages %}
+                        <div class="alert alert-info text-center mt-3">
+                            {% for message in messages %}
+                                <p>{{ message }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                {% endwith %}
+            </div>
+        </div>
+    </div>
+
+    <!-- About Section -->
+    <div id="about" class="section mt-5">
+        <div class="container">
+            <h2 class="text-center mb-3" id="aboutfont">About MoodScan</h2>
+            <p class="parastyle">Welcome to MoodScan - An Emotion Recognition Web Application! This tool is designed to help you understand and explore the fascinating world of emotion detection using advanced machine learning technology. Whether you're curious about how machines can recognize human emotions or you need a reliable emotion detection tool, you're in the right place.</p>
+            <p class="parastyle">Using our application, you can:</p>
+            <ol>
+                <li class="parastyle"><strong>Upload an Image:</strong> Simply upload a photo, and our system will analyze the facial expressions to determine the emotion.</li>
+                <li class="parastyle"><strong>Real-Time Detection:</strong> Use your webcam to detect emotions in real-time and see the results instantly.</li>
+            </ol>
+            <p class="parastyle">Our goal is to provide you with a seamless and engaging experience as you discover how emotion recognition works. We hope you enjoy using our application!</p>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-light text-center text-lg-start mt-5">
+        <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+            © 2024 Emotion Recognition. All rights reserved.
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
